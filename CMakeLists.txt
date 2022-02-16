@@ -3,4 +3,4 @@ project(Optional)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(Optional main.cpp)
+add_executable(Optional main.cpp optional.h)
