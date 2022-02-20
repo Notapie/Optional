@@ -18,14 +18,14 @@ public:
 
     Optional(const T& value) {
         // Сначала конструируем объект в выделенной под него памяти
-        value_ptr_ = new (&data_[0]) T(value);
+        value_ptr_ = new (data_) T(value);
         // Затем ставим метку о том, что optional не пуст
         is_initialized_ = true;
     }
 
     Optional(T&& value) {
         // Конструируем пустой объект нужного типа в выделенной памяти
-        value_ptr_ = new (&data_[0]) T(std::move(value));
+        value_ptr_ = new (data_) T(std::move(value));
         // Затем ставим метку о том, что optional не пуст
         is_initialized_ = true;
     }
@@ -49,7 +49,7 @@ public:
     Optional& operator=(const T& value) {
         if (!is_initialized_) {
             // Сначала конструируем объект в выделенной под него памяти
-            value_ptr_ = new (&data_[0]) T(value);
+            value_ptr_ = new (data_) T(value);
             // Затем ставим метку о том, что optional не пуст
             is_initialized_ = true;
         } else {
@@ -60,7 +60,7 @@ public:
     Optional& operator=(T&& value) {
         if (!is_initialized_) {
             // Сначала конструируем объект в выделенной под него памяти
-            value_ptr_ = new (&data_[0]) T(std::move(value));
+            value_ptr_ = new (data_) T(std::move(value));
             // Затем ставим метку о том, что optional не пуст
             is_initialized_ = true;
         } else {
@@ -147,7 +147,7 @@ private:
         // Вариант, что копируемый объект не инициализирован отсекается до входа в этот метод
         if (!is_initialized_) {
             // Конструируем объект, перемещая только что скопированный
-            value_ptr_ = new (&data_[0]) T(*other.value_ptr_);
+            value_ptr_ = new (data_) T(*other.value_ptr_);
             // И теперь ставим метку
             is_initialized_ = true;
         } else {
@@ -158,7 +158,7 @@ private:
     void MoveFrom(Optional& other) {
         if (!is_initialized_) {
             // Конструируем объект, перемещая только что скопированный
-            value_ptr_ = new (&data_[0]) T(std::move(*other.value_ptr_));
+            value_ptr_ = new (data_) T(std::move(*other.value_ptr_));
             // И теперь ставим метку
             is_initialized_ = true;
         } else {
