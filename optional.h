@@ -106,10 +106,13 @@ public:
 
     // Операторы * и -> не должны делать никаких проверок на пустоту Optional.
     // Эти проверки остаются на совести программиста
-    T& operator*() {
+    T&& operator*() && {
+        return std::move(*value_ptr_);
+    }
+    T& operator*() & {
         return *value_ptr_;
     }
-    const T& operator*() const {
+    const T& operator*() const & {
         return *value_ptr_;
     }
     T* operator->() {
@@ -120,13 +123,19 @@ public:
     }
 
     // Метод Value() генерирует исключение BadOptionalAccess, если Optional пуст
-    T& Value() {
+    T&& Value() && {
+        return const_cast<T&&>(
+            const_cast<const Optional<T>*>(this)->Value()
+        );
+    }
+
+    T& Value() & {
         return const_cast<T&>(
             const_cast<const Optional<T>*>(this)->Value()
         );
     }
 
-    const T& Value() const {
+    const T& Value() const & {
         if (!is_initialized_) {
             throw BadOptionalAccess();
         }
